@@ -9,6 +9,7 @@ app.get("/usuario", function (req, res) {
 });
 app.post("/usuario", function (req, res) {
   //req (solicitud) res (respuesta)
+  
   res.json({
     message: "POST usuario",
   });
