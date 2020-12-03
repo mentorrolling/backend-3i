@@ -1,32 +1,32 @@
+require('./config/config')
+
 const express = require("express");
+const mongoose = require('mongoose');
+const bodyParser = require("body-parser");
+
 const app = express();
 
-app.get("/usuario", function (req, res) {
-  //req (solicitud) res (respuesta)
-  res.json({
-    message: "GET usuario",
-  });
-});
-app.post("/usuario", function (req, res) {
-  //req (solicitud) res (respuesta)
-  
-  res.json({
-    message: "POST usuario",
-  });
-});
-app.put("/usuario", function (req, res) {
-  //req (solicitud) res (respuesta)
-  res.json({
-    message: "PUT usuario",
-  });
-});
-app.delete("/usuario", function (req, res) {
-  //req (solicitud) res (respuesta)
-  res.json({
-    message: "DELETE usuario",
-  });
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
+
+
+app.use(require('./rutas/usuario'))
+
+
+
+//Creamos conexion con mongoDB
+mongoose.connect('mongodb://localhost:27017/rolling', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+},(err, res)=>{
+  if(err) throw err;
+  console.log('Base de datos online')
+
 });
 
-app.listen(3000, () => {
-  console.log("Genial! estamos online:", 3000);
+app.listen(process.env.PORT, () => {
+  console.log("Genial! estamos online:", process.env.PORT);
 });
