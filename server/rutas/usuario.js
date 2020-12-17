@@ -11,7 +11,9 @@ const app = express();
 
 const Usuario = require("../modelos/usuario");
 
-app.get("/usuario", function (req, res) {
+const { verificaToken } = require("../middlewares/autenticacion");
+
+app.get("/usuario", verificaToken, function (req, res) {
   let desde = req.query.desde || 0;
   desde = Number(desde);
 
@@ -89,7 +91,7 @@ app.post("/usuario", function (req, res) {
 //------------------------------------
 
 //Método PUT----------------------------
-app.put("/usuario/:id", function (req, res) {
+app.put("/usuario/:id", verificaToken, function (req, res) {
   //req (solicitud) res (respuesta)
   let id = req.params.id;
 
