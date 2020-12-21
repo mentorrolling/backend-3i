@@ -4,7 +4,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
+//install npm cors --save
+const cors = require("cors");
 const app = express();
+
+app.use(cors()); //Middleware para el CORS
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
