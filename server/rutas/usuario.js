@@ -52,7 +52,7 @@ app.get("/usuario", verificaToken, function (req, res) {
 });
 
 //-----Metodo POST----------
-app.post("/usuario", function (req, res) {
+app.post("/usuario", [verificaToken, verificaAdminRole], function (req, res) {
   //req (solicitud) res (respuesta)
 
   let body = req.body;
