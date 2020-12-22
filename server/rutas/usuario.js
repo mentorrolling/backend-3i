@@ -51,6 +51,22 @@ app.get("/usuario", verificaToken, function (req, res) {
     });
 });
 
+app.get("/usuario/:id", verificaToken, function (req, res) {
+  let id = req.params.id;
+  Usuario.findById(id, (err, usuarioDB) => {
+    if (err) {
+      return res.status(400).json({
+        ok: false,
+        err,
+      });
+    }
+    res.json({
+      ok: true,
+      usuario: usuarioDB,
+    });
+  });
+});
+
 //-----Metodo POST----------
 app.post("/usuario", [verificaToken, verificaAdminRole], function (req, res) {
   //req (solicitud) res (respuesta)

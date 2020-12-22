@@ -5,7 +5,12 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 //install npm cors --save
+/* El intercambio de recursos de origen cruzado ( CORS ) 
+es un mecanismo que permite que los recursos restringidos 
+en una página web se soliciten desde otro dominio fuera del 
+dominio desde el que se sirvió el primer recurso */
 const cors = require("cors");
+
 const app = express();
 
 app.use(cors()); //Middleware para el CORS

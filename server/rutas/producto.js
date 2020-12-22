@@ -1,8 +1,10 @@
 const express = require("express");
 const { verificaToken } = require("../middlewares/autenticacion");
-const { populate } = require("../modelos/producto");
+
 const app = express();
 let Producto = require("../modelos/producto");
+
+//---Método GET
 
 app.get("/producto", verificaToken, (req, res) => {
   let desde = req.query.desde || 0;
@@ -26,6 +28,12 @@ app.get("/producto", verificaToken, (req, res) => {
       }
 
       Producto.count({ disponible: true }, (err, conteo) => {
+        if (err) {
+          return res.status(400).json({
+            ok: false,
+            err,
+          });
+        }
         res.json({
           ok: true,
           productos,
@@ -64,6 +72,30 @@ app.get("/producto/:id", verificaToken, (req, res) => {
     });
 });
 
+//==========================
+//  Buscar producto por termino
+//==========================
+app.get("/producto/buscar/:termino", verificaToken, (req, res) => {
+  let termino = req.params.termino;
+
+  let reGex = new RegExp(termino, "i");
+
+  Producto.find({ nombre: reGex })
+    .populate("categoria", "descripcion")
+    .exec((err, producto) => {
+      if (err) {
+        return res.status(500).json({
+          ok: false,
+          err,
+        });
+      }
+      res.json({
+        ok: true,
+        producto,
+      });
+    });
+});
+
 app.post("/producto", verificaToken, (req, res) => {
   let body = req.body;
 
@@ -96,28 +128,33 @@ app.put("/producto/:id", verificaToken, (req, res) => {
 
   let body = req.body;
 
-  Producto.findByIdAndUpdate(id, body, { new: true }, (err, productoDB) => {
-    if (err) {
-      return res.status(500).json({
-        ok: false,
-        err,
-      });
-    }
-    if (!productoDB) {
-      return res.status(400).json({
-        ok: false,
-        err: {
-          message: "El id no existe",
-        },
-      });
-    }
+  Producto.findByIdAndUpdate(
+    id,
+    body,
+    { new: true, runValidators: true },
+    (err, productoDB) => {
+      if (err) {
+        return res.status(500).json({
+          ok: false,
+          err,
+        });
+      }
+      if (!productoDB) {
+        return res.status(400).json({
+          ok: false,
+          err: {
+            message: "El id no existe",
+          },
+        });
+      }
 
-    res.json({
-      ok: true,
-      message: "Producto actualizado",
-      producto: productoDB,
-    });
-  });
+      res.json({
+        ok: true,
+        message: "Producto actualizado",
+        producto: productoDB,
+      });
+    }
+  );
 });
 
 app.delete("/producto/:id", verificaToken, (req, res) => {

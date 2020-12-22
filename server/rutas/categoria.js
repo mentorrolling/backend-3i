@@ -43,7 +43,7 @@ app.get("/categoria/:id", verificaToken, (req, res) => {
       });
     }
     if (!categoriaDB) {
-      return res.status(500).json({
+      return res.status(400).json({
         ok: false,
         err: {
           message: "La categoría no existe",
@@ -111,7 +111,9 @@ app.put("/categoria/:id", [verificaToken, verificaAdminRole], (req, res) => {
       if (!categoriaDB) {
         return res.status(400).json({
           ok: false,
-          err,
+          err: {
+            message: "El ID no existe",
+          },
         });
       }
       res.json({
